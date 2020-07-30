@@ -1,0 +1,55 @@
+<html>
+  <head><meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+	 *{
+	 box-sizing:border-box;
+	 }
+	 body{
+	
+	 }
+	  .header{ background-color:gray;
+	  text-align:center;
+	  font-size:50px;
+	
+	  padding:10px;
+	  }
+	  .top-nav{
+         overflow:hidden;
+	  background-color:black;
+	  }
+	  .top-nav a{
+	  background-color:#333;
+	  text-decoration:none;
+	  font-size:30px;
+	  color:#f1f1f1;
+	   float:left;
+	  display:block;
+	  padding: 14px 16px;
+	  }
+	  .top-nav a:hover{
+	  background-color:#ddd;
+	  color:black;
+	  }
+	  p{
+	  clear:left;
+	  text-align:center;
+	  font-size:30px;
+	  color: tomato;
+	  }
+	</style>
+  </head>
+   <body>
+   <div class="header">
+   KNOW YOUR CAR
+   </div>
+   <div class="top-nav">
+   <a href="#" id="left">BMW</a>
+   <a href="#">AUDI</a>
+   <a href="#">MERCEDES</a>
+   <a href="#">MESARATI</a>
+   <a href="#">LAMBORGHINI</a>
+   </div>
+   
+   <p>welcome to the website<p>
+   </body>
+</html>
