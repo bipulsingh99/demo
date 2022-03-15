@@ -53,3 +53,60 @@
    <p>welcome to the website<p>
    </body>
 </html>
+<!-- 
+ class tower_ui(QWidget):
+   def __init__(self):
+       super().__init__();
+       self.initUI()
+       self.pen1=QPen(Qt.green,8,Qt.SolidLine)
+       self.pen2=QPen(QColor(255,255,0),8,Qt.DashLine)
+       self.arr=[True,False,False,True,False]
+       
+   def initUI(self):
+       self.resize(600,600)
+       self.setStyleSheet("background-color:black")
+
+
+       self.label = QLabel(self)
+       self.label.setGeometry(275,50,50,50)  
+       
+       self.pixmap = QPixmap('tower.jpg')
+ 
+       
+       self.label.setPixmap(self.pixmap)
+ 
+       self.label.resize(self.pixmap.width(),
+                          self.pixmap.height())
+        
+   def paintEvent(self,event):
+       painter=QPainter(self)
+       
+       painter.setPen(self.pen1)
+       if(self.arr[0]==False):
+        painter.setPen(self.pen2)
+       painter.drawLine(300,100,100,300)
+       
+       painter.setPen(self.pen1)
+       if(self.arr[1]==False):
+        painter.setPen(self.pen2)
+       painter.drawLine(300,100,200,300)
+       
+       painter.setPen(self.pen1)
+       if(self.arr[2]==False):
+        painter.setPen(self.pen2)
+        
+       painter.drawLine(300,100,300,300)
+
+       painter.setPen(self.pen1)
+       if(self.arr[3]==False):
+        painter.setPen(self.pen2)
+        
+       painter.drawLine(300,100,400,300)
+       painter.setPen(self.pen1)
+       if(self.arr[4]==False):
+        painter.setPen(self.pen2)
+        
+       painter.drawLine(300,100,500,300)
+       
+
+-->
