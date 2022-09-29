@@ -54,37 +54,43 @@
    </body>
 </html>
 
+<EditText
+        android:id="@+id/idEdtNoteName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/purple_700"
+        android:hint="Enter Note Title"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+    <!--edit text for note description-->
+    <EditText
+        android:id="@+id/idEdtNoteDesc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/idBtn"
+        android:layout_below="@id/idEdtNoteName"
+        android:layout_margin="10dp"
+        android:background="@color/purple_700"
+        android:gravity="start|top"
+        android:hint="Enter your Note Details"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
 
-class TodoViewModel(application: Application): AndroidViewModel(application) {
+    <!--button for saving and updating a note-->
+    <Button
+        android:id="@+id/idBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
 
-    private lateinit var todoDao: TodoDao
-    private lateinit var todoRepository:TodoRepository
-     lateinit var AllTodo:LiveData<List<Todo>>
-
-
-    init{
-        todoDao=TodoDatabase.getTodoDatabase(application).getTodoDao()
-        todoRepository= TodoRepository(todoDao)
-        AllTodo=todoRepository.getAllTodo
-
-    }
-
-     fun addTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.insert(todo)
-    }
-
-      fun deleteTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.delete(todo)
-    }
-
-     fun updateTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.update(todo)
-    }
-}
+        android:text="Button"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
