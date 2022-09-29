@@ -55,63 +55,62 @@
 </html>
 
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() ,TodoClickInterface,TodoClickDeleteInterface{
+class TodoRVAdapter(
+    val context: Context,
+    val todoClickDeleteInterface:TodoClickDeleteInterface,
+    val todoClickInterface:TodoClickInterface):RecyclerView.Adapter<TodoRVAdapter.ViewHolder>() {
 
-    private  lateinit var viewModel:TodoViewModel
-    private lateinit var todoRV:RecyclerView
-    private lateinit var addButton:FloatingActionButton
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    private val allTodo= ArrayList<Todo>()
 
-        todoRV=findViewById(R.id.todoRV)
-        addButton=findViewById(R.id.addButton)
+    inner class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+        val todoTitle=itemView.findViewById<TextView>(R.id.idTodoTitle)
+        val todoDescription=itemView.findViewById<TextView>(R.id.idTodoDescription)
+        val todoDelete=itemView.findViewById<ImageView>(R.id.idTodoDelete)
+    }
 
-        todoRV.layoutManager=LinearLayoutManager(this)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val itemView=LayoutInflater.from(parent.context).inflate(R.layout.todo_rv_item,parent,false)
+        return ViewHolder(itemView)
+    }
 
-        val todoRVAdapter=TodoRVAdapter(this,this,this)
-        todoRV.adapter=todoRVAdapter
 
-        viewModel=ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(TodoViewModel::class.java)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.todoTitle.setText(allTodo.get(position).title)
+        holder.todoDescription.setText(allTodo.get(position).description)
 
-        viewModel.AllTodo.observe(this, Observer { list->
-            list?.let{
-                todoRVAdapter.updateList(it)
-            }
+        holder.todoDelete.setOnClickListener({
+
+            todoClickDeleteInterface.onTodoDeleteClick(allTodo.get(position))
         })
 
-        addButton.setOnClickListener(
-            {
-                val intent = Intent(this@MainActivity, AddEditTodoActivity::class.java)
-                startActivity(intent)
-                this.finish()
-            }
-        )
+        holder.itemView.setOnClickListener({
+            todoClickInterface.onTodoClick(allTodo.get(position))
+        })
     }
 
-    override fun onTodoClick(todo: Todo) {
-        val intent= Intent(this@MainActivity,AddEditTodoActivity::class.java)
-        intent.putExtra("todoType","Edit")
-        intent.putExtra("todoTitle",todo.title)
-        intent.putExtra("todoDescription",todo.description)
-        intent.putExtra("todoId",todo.id)
-
-        startActivity(intent)
-        this.finish()
+    override fun getItemCount(): Int {
+        return allTodo.size
     }
 
-    override fun onTodoDeleteClick(todo: Todo) {
-        viewModel.deleteTodo(todo)
-        Toast.makeText(this,"${todo.title} Deleted", Toast.LENGTH_SHORT).show()
+    fun updateList(newTodoList:List<Todo>){
+        allTodo.clear()
+        allTodo.addAll(newTodoList)
+        notifyDataSetChanged()
     }
+}
+
+interface TodoClickInterface{
+    fun onTodoClick(todo:Todo)
+}
+
+interface TodoClickDeleteInterface{
+    fun onTodoDeleteClick(todo:Todo)
 }
