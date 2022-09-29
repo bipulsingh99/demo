@@ -54,43 +54,65 @@
    </body>
 </html>
 
-<EditText
-        android:id="@+id/idEdtNoteName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/purple_700"
-        android:hint="Enter Note Title"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white" />
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 
-    <!--edit text for note description-->
-    <EditText
-        android:id="@+id/idEdtNoteDesc"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/idBtn"
-        android:layout_below="@id/idEdtNoteName"
-        android:layout_margin="10dp"
-        android:background="@color/purple_700"
-        android:gravity="start|top"
-        android:hint="Enter your Note Details"
-        android:inputType="textMultiLine"
-        android:singleLine="false"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white" />
+class AddEditTodoActivity : AppCompatActivity() {
 
-    <!--button for saving and updating a note-->
-    <Button
-        android:id="@+id/idBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+    lateinit var viewModel: TodoViewModel
 
-        android:text="Button"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_edit_todo)
+
+       viewModel=ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(TodoViewModel::class.java)
+
+       var todoTitleEdt=findViewById<TextView>(R.id.idEdtNoteName)
+       var todoDescriptionEdt=findViewById<TextView>(R.id.idEdtNoteDesc)
+       var saveBtn=findViewById<Button>(R.id.idBtn)
+        var todoId=-1
+
+        val todoType=intent.getStringExtra("todoType")
+        if(todoType.equals("Edit"))
+        {
+            val todoTitle=intent.getStringExtra("todoTitle")
+            val todoDescription=intent.getStringExtra("todoDescription")
+            todoId=intent.getIntExtra("todoId",-1)
+            saveBtn.setText("Update Todo")
+            todoTitleEdt.setText(todoTitle)
+            todoDescriptionEdt.setText(todoDescription)
+        }else{
+            saveBtn.setText("Save Todo")
+        }
+
+        saveBtn.setOnClickListener({
+
+            if(todoType.equals("Edit")) {
+                if (todoTitleEdt.text.toString().isNotEmpty() && todoDescriptionEdt.text.toString()
+                        .isNotEmpty()
+                ) {
+                    val updTodo =
+                        Todo(todoTitleEdt.text.toString(), todoDescriptionEdt.text.toString())
+                    updTodo.id = todoId
+                    viewModel.updateTodo(updTodo)
+                    Toast.makeText(this, "Todo updated ...", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                if (todoTitleEdt.text.toString().isNotEmpty() && todoDescriptionEdt.text.toString()
+                        .isNotEmpty()
+                ){
+                    viewModel.addTodo(Todo(todoTitleEdt.text.toString(),todoDescriptionEdt.text.toString()))
+                    Toast.makeText(this,"${todoTitleEdt} added",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+           startActivity(Intent(applicationContext,MainActivity::class.java))
+            this.finish()
+        })
+    }
+}
