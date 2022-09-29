@@ -54,36 +54,25 @@
    </body>
 </html>
 
-mport android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-class TodoViewModel(application: Application): AndroidViewModel(application) {
-
-    private lateinit var todoDao: TodoDao
-    private lateinit var todoRepository:TodoRepository
-     lateinit var AllTodo:LiveData<List<Todo>>
+<androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/todoRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp" />
+<!--        tools:listitem="@layout/note_rv_item" -->
 
 
-    init{
-        todoDao=TodoDatabase.getTodoDatabase(application).getTodoDao()
-        todoRepository= TodoRepository(todoDao)
-        AllTodo=todoRepository.getAllTodo
+    <!--fab for adding a new note-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_baseline_add_24"
+        app:backgroundTint="@color/purple_200"
+        app:tint="@color/white" />
 
-    }
-
-     fun addTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.insert(todo)
-    }
-
-      fun deleteTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.delete(todo)
-    }
-
-     fun updateTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
-        todoRepository.update(todo)
-    }
-}
+</RelativeLayout>
