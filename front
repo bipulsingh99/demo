@@ -54,51 +54,36 @@
    </body>
 </html>
 
-<RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+mport android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-        <!--text view for displaying our note text-->
-        <TextView
-            android:id="@+id/idTodoTitle"
-            android:background="@color/purple_200"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_toLeftOf="@id/idTodoDelete"
-            android:padding="4dp"
-            android:text="Note"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+class TodoViewModel(application: Application): AndroidViewModel(application) {
 
-        <!--text view for displaying our last updated text-->
-        <TextView
-            android:id="@+id/idTodoDescription"
-            android:background="@color/purple_200"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/idTodoTitle"
-            android:layout_margin="3dp"
-            android:layout_toLeftOf="@id/idTodoDelete"
-            android:padding="4dp"
-            android:text="Updated At"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
-
-        <!--imageview for displaying delete icon-->
-        <ImageView
-            android:id="@+id/idTodoDelete"
-            android:background="@color/purple_200"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="3dp"
-            android:padding="3dp"
-            android:src="@drawable/ic_baseline_delete_outline_24" />
-<!--            app:tint="@color/white" -->
+    private lateinit var todoDao: TodoDao
+    private lateinit var todoRepository:TodoRepository
+     lateinit var AllTodo:LiveData<List<Todo>>
 
 
-    </RelativeLayout>
+    init{
+        todoDao=TodoDatabase.getTodoDatabase(application).getTodoDao()
+        todoRepository= TodoRepository(todoDao)
+        AllTodo=todoRepository.getAllTodo
+
+    }
+
+     fun addTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.insert(todo)
+    }
+
+      fun deleteTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.delete(todo)
+    }
+
+     fun updateTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.update(todo)
+    }
+}
