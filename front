@@ -55,62 +55,36 @@
 </html>
 
 
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class TodoRVAdapter(
-    val context: Context,
-    val todoClickDeleteInterface:TodoClickDeleteInterface,
-    val todoClickInterface:TodoClickInterface):RecyclerView.Adapter<TodoRVAdapter.ViewHolder>() {
+class TodoViewModel(application: Application): AndroidViewModel(application) {
 
-    private val allTodo= ArrayList<Todo>()
+    private lateinit var todoDao: TodoDao
+    private lateinit var todoRepository:TodoRepository
+     lateinit var AllTodo:LiveData<List<Todo>>
 
-    inner class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-        val todoTitle=itemView.findViewById<TextView>(R.id.idTodoTitle)
-        val todoDescription=itemView.findViewById<TextView>(R.id.idTodoDescription)
-        val todoDelete=itemView.findViewById<ImageView>(R.id.idTodoDelete)
+
+    init{
+        todoDao=TodoDatabase.getTodoDatabase(application).getTodoDao()
+        todoRepository= TodoRepository(todoDao)
+        AllTodo=todoRepository.getAllTodo
+
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView=LayoutInflater.from(parent.context).inflate(R.layout.todo_rv_item,parent,false)
-        return ViewHolder(itemView)
+     fun addTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.insert(todo)
     }
 
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.todoTitle.setText(allTodo.get(position).title)
-        holder.todoDescription.setText(allTodo.get(position).description)
-
-        holder.todoDelete.setOnClickListener({
-
-            todoClickDeleteInterface.onTodoDeleteClick(allTodo.get(position))
-        })
-
-        holder.itemView.setOnClickListener({
-            todoClickInterface.onTodoClick(allTodo.get(position))
-        })
+      fun deleteTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.delete(todo)
     }
 
-    override fun getItemCount(): Int {
-        return allTodo.size
+     fun updateTodo(todo:Todo) = viewModelScope.launch(Dispatchers.IO){
+        todoRepository.update(todo)
     }
-
-    fun updateList(newTodoList:List<Todo>){
-        allTodo.clear()
-        allTodo.addAll(newTodoList)
-        notifyDataSetChanged()
-    }
-}
-
-interface TodoClickInterface{
-    fun onTodoClick(todo:Todo)
-}
-
-interface TodoClickDeleteInterface{
-    fun onTodoDeleteClick(todo:Todo)
 }
